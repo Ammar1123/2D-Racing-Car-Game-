@@ -14,27 +14,27 @@ This repository contains several files that are part of a networked car simulati
 **File Descriptions**
 
 
-## **carfile.py**
+# **carfile.py**
 
 
 This file contains a Python script that simulates a car object. It provides methods to control the car's behavior, such as starting the engine, stopping the engine, accelerating, braking, and retrieving the current speed of the car.
 
-**serverfile.py**
+# **serverfile.py**
 
 
 This file contains a Python script that sets up a server to handle network communication. It listens for incoming client connections and responds to requests. The server is responsible for coordinating communication between clients and providing the necessary data and functionality.
 
-**networkfile.py**
+# **networkfile.py**
 
 
 This file contains a Python script that provides network-related functionalities. It includes methods for establishing network connections, sending data over the network, and receiving data from network connections. It serves as a utility module used by both the server and client scripts.
 
-**clientfile.py**
+# **clientfile.py**
 
 
 This file contains a Python script that acts as a client to connect and interact with the server. It establishes a connection to the server and utilizes the provided functionalities to send requests and receive responses.
 
-**Usage**
+# **Usage**
 
 
 To use the files in this repository, follow the steps below:
