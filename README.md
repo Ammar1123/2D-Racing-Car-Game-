@@ -1,6 +1,9 @@
 # Distributed_Project
 2D racing game with chat
 **Description**
+
+Video link : https://drive.google.com/drive/folders/1hX_06eVIQZfs62jHt230rsp9-J4_poE9?usp=sharing
+
 This repository contains several files that are part of a networked car simulation application. The files included are:
 
 **carfile.py**: Simulates a car object and provides functionalities such as starting, stopping, accelerating, braking, and retrieving the current speed.
