@@ -1,11 +1,6 @@
 from pygame.locals import *
-import random
 import time
 import pygame
-import threading
-from _thread import *
-import socket
-import pickle
 import Network
 
 
@@ -69,7 +64,30 @@ pygame.display.set_caption("Need For Speed")
 win_score = 20
 
 
-class ObstaclesLeft():
+
+class PlayerWinGame():
+    img = finishLine
+    img2 = road
+
+    def __init__(self, x, y,speedy,finish):
+        self.img = self.img
+        self.x = x
+        self.y = y
+        self.speedy = speedy
+        self.finish = finish
+
+    def draw(self, win,show):
+        if show:
+            win.blit(self.img, (80, self.y))
+
+    def update(self,show):
+
+        if show:
+            self.speedy = self.speedy + 0.3           # 0.3 is the acceleration
+            self.y = self.y + min(self.speedy, 15)    # 15 is the max_vel
+
+
+class leftObs():
 
     image1 = GreenOBS
     def __init__(self, x, y,speedy,finish,obs):
@@ -110,7 +128,7 @@ class ObstaclesLeft():
             elif self.obs == 2:
                 self.img = self.image1
 
-class ObstaclesRight():
+class rightObs():
 
     image2 = BlackOBS
     image3 = YellowOBS
@@ -156,29 +174,6 @@ class ObstaclesRight():
             elif self.obs == 3:
                 self.img = self.image3
 
-class PlayerWinGame():
-    img = finishLine
-    img2 = road
-
-    def __init__(self, x, y,speedy,finish):
-        self.img = self.img
-        self.x = x
-        self.y = y
-        self.speedy = speedy
-        self.finish = finish
-
-    def draw(self, win,show):
-        if show:
-            win.blit(self.img, (80, self.y))
-
-    def update(self,show):
-
-        if show:
-            self.speedy = self.speedy + 0.3           # 0.3 is the acceleration
-            self.y = self.y + min(self.speedy, 15)    # 15 is the max_vel
-
-
-
 
 def gameStatus(score,startTime,car,car1,car2,car3,car4):
     font = pygame.font.Font(None,22)
@@ -222,7 +217,6 @@ def gameOver(finish,obstacles):
         text = font.render("Game Over :(",True, 'white')
         text_width = text.get_width()
         text_height = text.get_height()
-        x = int(width/2 - text_width/2)
         y = int(height/2 - text_height)
         score = "score: "+str(obstacles.score)
         displayScore = font.render(score, True, 'white')
@@ -253,13 +247,13 @@ def Loser(show):
         game_loop(inputText)
 
 
-def bordersCollision(car,mask, x=44, y=-2):
+def Borders(car, mask, x=44, y=-2):
     car_mask = pygame.mask.from_surface(PolicePlayer)
     offset = (int(car.x -x), int(car.y - y))
     intersection_point = mask.overlap(car_mask, offset)
     return intersection_point
 
-def chatBox(event, car, started, inputText, text_input, text_input_render, button_image, button_rect):
+def Chat(event, car, started, inputText, text_input, text_input_render, button_image, button_rect):
     if event.type == KEYDOWN:
         if event.key == pygame.K_TAB:
             started = True
@@ -337,7 +331,7 @@ def drawChatBox(text_input_render, car1, car2, car3,car4, button_image,button_re
     win.blit(button_image, button_rect)
     pygame.display.update()
 
-def redrawWindow(win,images,car, car1,car2,car3,car4,roadx,roady, obstacle,obstacleR,won,show,startTime,button_image,button_rect):
+def DrawClient(win, images, car, car1, car2, car3, car4, roadx, roady, obstacle, obstacleR, won, show, startTime, button_image, button_rect):
     for img, pos in images:
         win.blit(img, pos)
     win.blit(borders, [44, -2])
@@ -442,8 +436,8 @@ def game_loop(inputText):
     car = n.getPlayer()
     car.nickname = inputText
 
-    obstacle = ObstaclesLeft(car.obsL_x[obs_x], obstacle_y, road_vel, finish, car.obsL_img[obs_img])
-    obstacleR = ObstaclesRight(car.obsR_x[obs_x], obstacle_y, road_vel, car.obsR_img[obs_img])
+    obstacle = leftObs(car.obsL_x[obs_x], obstacle_y, road_vel, finish, car.obsL_img[obs_img])
+    obstacleR = rightObs(car.obsR_x[obs_x], obstacle_y, road_vel, car.obsR_img[obs_img])
 
     won = PlayerWinGame(0, finishY, road_vel, show)
 
@@ -468,7 +462,7 @@ def game_loop(inputText):
                 run = False
             else:
                 #Chat is enabled while playing the game
-                started, text_input, text_input_render = chatBox(event, car, started, inputText, text_input, text_input_render,button_image, button_rect)
+                started, text_input, text_input_render = Chat(event, car, started, inputText, text_input, text_input_render, button_image, button_rect)
 
         drawChatBox(text_input_render, p2, p3, p4, p5, button_image,button_rect)
 
@@ -501,7 +495,7 @@ def game_loop(inputText):
                     break
                 else:
                     # Players can chat before they play the game
-                    started, text_input, text_input_render = chatBox(event, car, started, inputText, text_input, text_input_render, button_image, button_rect)
+                    started, text_input, text_input_render = Chat(event, car, started, inputText, text_input, text_input_render, button_image, button_rect)
 
             drawChatBox(text_input_render, p2, p3, p4, p5, button_image,button_rect)
 
@@ -521,7 +515,7 @@ def game_loop(inputText):
         obstacle.update(car.obsL_x[obs_x], car.obsL_img[obs_img])
         obstacleR.update(car.obsR_x[obs_x], car.obsR_img[obs_img])
         won.update(show)
-        redrawWindow(win, images, car, p2, p3,p4, p5, roadx, roady, obstacle, obstacleR, won, show, startTime,button_image, button_rect)
+        DrawClient(win, images, car, p2, p3, p4, p5, roadx, roady, obstacle, obstacleR, won, show, startTime, button_image, button_rect)
 
         keys = pygame.key.get_pressed()
         if obstacle.score < 2:
@@ -537,13 +531,13 @@ def game_loop(inputText):
                 roady = 0
 
 
-        if bordersCollision(car,borderY_mask) != None:
+        if Borders(car, borderY_mask) != None:
             car.boundary()
 
-        if bordersCollision(car, borders_mask) != None:
+        if Borders(car, borders_mask) != None:
             gameOver(finish, obstacle)
 
-        if bordersCollision(car, borderY_mask) != None:
+        if Borders(car, borderY_mask) != None:
             car.boundary()
 
         if ((obstacle.x - car.x) < 55 and abs(car.y - obstacle.y) <= 124):
