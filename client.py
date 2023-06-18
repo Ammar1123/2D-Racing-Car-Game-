@@ -87,7 +87,7 @@ class PlayerWinGame():
             self.y = self.y + min(self.speedy, 15)    # 15 is the max_vel
 
 
-class leftObs():
+class LeftObs():
 
     image1 = GreenOBS
     def __init__(self, x, y,speedy,finish,obs):
@@ -128,7 +128,7 @@ class leftObs():
             elif self.obs == 2:
                 self.img = self.image1
 
-class rightObs():
+class RightObs():
 
     image2 = BlackOBS
     image3 = YellowOBS
@@ -436,8 +436,8 @@ def game_loop(inputText):
     car = n.getPlayer()
     car.nickname = inputText
 
-    obstacle = leftObs(car.obsL_x[obs_x], obstacle_y, road_vel, finish, car.obsL_img[obs_img])
-    obstacleR = rightObs(car.obsR_x[obs_x], obstacle_y, road_vel, car.obsR_img[obs_img])
+    obstacle = LeftObs(car.obsL_x[obs_x], obstacle_y, road_vel, finish, car.obsL_img[obs_img])
+    obstacleR = RightObs(car.obsR_x[obs_x], obstacle_y, road_vel, car.obsR_img[obs_img])
 
     won = PlayerWinGame(0, finishY, road_vel, show)
 
